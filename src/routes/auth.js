@@ -2,7 +2,9 @@ import express from 'express';
 
 import {
     registerUserController,
-    loginUserController
+    loginUserController,
+    refreshController,
+    logoutController
 } from '../controllers/auth.js';
 
 import {
@@ -26,5 +28,7 @@ authRouter.post(
     validateBody(loginSchema),
     ctrlWrapper(loginUserController)
 );
+authRouter.post('/refresh', ctrlWrapper(refreshController));
+authRouter.post('/logout', ctrlWrapper(logoutController));
 
 export default authRouter;
