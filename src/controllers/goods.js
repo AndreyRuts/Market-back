@@ -1,5 +1,5 @@
-// import * as fs from 'node:fs/promises';
-// import path from 'path';
+import * as fs from 'node:fs/promises';
+import path from 'path';
 import createHttpError from 'http-errors';
 
 import {
@@ -14,6 +14,8 @@ import {
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { uploadToCloudinary } from '../utils/uploadToCloudinary.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
 
 
 export const getAllGoodsController = async (req, res) => {
@@ -50,7 +52,6 @@ export const getGoodsByIdController = async (req, res, next) => {
   };
 
 export const getOwnGoodsController = async (req, res) => {
-    console.log('>>> req.user:', req.user);
     const { page, perPage } = parsePaginationParams(req.query);
     const { sortBy, sortOrder } = parseSortParams(req.query);
     const filters = parseFilterParams(req.query);
@@ -71,14 +72,41 @@ export const getOwnGoodsController = async (req, res) => {
 };
 
 export const createGoodsController = async (req, res) => {
-    const goods = {
-        ...req.body,
-        seller: req.user.id
-    };
-    const newGoods = await createGoods(goods);
+    const images = [];
 
+    if (req.files && req.files.length > 0) {
+        if (getEnvVar('UPLOAD_TO_CLOUDINARY') === 'true') {       
+            for (const file of req.files) {          
+                const result = await uploadToCloudinary(file.path); 
+                images.push({
+                    public_id: result.public_id,
+                    url: result.secure_url,
+                });
+                await fs.unlink(file.path);
+            }
+        }
+        else {
+            for (const file of req.files) {           
+                const destinationPath = path.resolve('src', 'uploads', file.filename);              
+                await fs.rename(file.path, destinationPath);             
+                images.push({                
+                    public_id: null,                    
+                    url: `http://localhost:3000/uploads/${file.filename}`                  
+                });               
+            }             
+        }
+    }
+  
+    const goods = {
+        ...req.body,       
+        seller: req.user.id,    
+        images     
+    };
+  
+    const newGoods = await createGoods(goods);
+  
     res.status(201).json({
-        status: 201,
+        status: 201,  
         message: 'Successfully created a goods!',
         data: newGoods
     });

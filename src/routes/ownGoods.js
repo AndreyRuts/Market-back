@@ -25,14 +25,14 @@ ownGoodsRouter.get('/', ctrlWrapper(getOwnGoodsController));
 
 ownGoodsRouter.post(
   '/',
-  upload.single('photo'),
+  upload.array('images'),
   validateBody(goodsValidationSchema),
   ctrlWrapper(createGoodsController)
 );
 
 ownGoodsRouter.patch(
   '/:id',
-  upload.single('photo'),
+  upload.array('images'),
   isValidID,
   validateBody(goodsUpdateValidationSchema),
   ctrlWrapper(patchGoodsController)
