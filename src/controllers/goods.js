@@ -11,9 +11,22 @@ import {
     deleteGoods
 } from "../services/goods.js";
 
+import { parseSortParams } from '../utils/parseSortParams.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+
 
 export const getAllGoodsController = async (req, res) => {
-    const response = await getAllGoods();
+    const { page, perPage } = parsePaginationParams(req.query);
+    const { sortBy, sortOrder } = parseSortParams(req.query);
+    const filters = parseFilterParams(req.query);
+    const response = await getAllGoods({
+        page,
+        perPage,
+        sortBy,
+        sortOrder,
+        filters
+    });
     res.status(200).json({
         status: 200,
         message: 'Successfully found all public goods!',
@@ -37,7 +50,19 @@ export const getGoodsByIdController = async (req, res, next) => {
   };
 
 export const getOwnGoodsController = async (req, res) => {
-    const response = await getOwnGoods({ seller: req.user.id });
+    console.log('>>> req.user:', req.user);
+    const { page, perPage } = parsePaginationParams(req.query);
+    const { sortBy, sortOrder } = parseSortParams(req.query);
+    const filters = parseFilterParams(req.query);
+    const response = await getOwnGoods({
+        seller: req.user.id,
+        page,
+        perPage,
+        sortBy,
+        sortOrder,
+        filters
+    });
+
     res.status(200).json({
         status: 200,
         message: 'Successfully found your own goods!',

@@ -10,11 +10,11 @@ export const goodsValidationSchema = Joi.object({
     quantity: Joi.number().min(0).default(0),
     images: Joi.array().items(
         Joi.object({
-            public_id: Joi.string().required(),
-            url: Joi.string().uri().required(),
+            public_id: Joi.string(),
+            url: Joi.string().uri(),
         })
-    ).min(1).required(),
-    seller: Joi.string().required(),
+    ),
+    // seller: Joi.string().required(),
 });
 
 export const goodsUpdateValidationSchema = Joi.object({
@@ -25,10 +25,10 @@ export const goodsUpdateValidationSchema = Joi.object({
     quantity: Joi.number().min(0),
     images: Joi.array().items(
         Joi.object({
-            public_id: Joi.string().required(),
-            url: Joi.string().uri().required(),
+            public_id: Joi.string(),
+            url: Joi.string().uri(),
         })
     ),
-    seller: Joi.string(),
+    // seller: Joi.string(),
 });
   
