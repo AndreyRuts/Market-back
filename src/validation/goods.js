@@ -14,7 +14,6 @@ export const goodsValidationSchema = Joi.object({
             url: Joi.string().uri(),
         })
     ),
-    // seller: Joi.string().required(),
 });
 
 export const goodsUpdateValidationSchema = Joi.object({
@@ -29,6 +28,5 @@ export const goodsUpdateValidationSchema = Joi.object({
             url: Joi.string().uri(),
         })
     ),
-    // seller: Joi.string(),
 });
   
