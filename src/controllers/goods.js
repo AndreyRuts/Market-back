@@ -1,5 +1,3 @@
-import * as fs from 'node:fs/promises';
-import path from 'path';
 import createHttpError from 'http-errors';
 
 import {
@@ -14,8 +12,7 @@ import {
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
-import { uploadToCloudinary } from '../utils/uploadToCloudinary.js';
-import { getEnvVar } from '../utils/getEnvVar.js';
+import { processUploadedFiles } from '../utils/processUploadedFiles.js';
 
 
 export const getAllGoodsController = async (req, res) => {
@@ -72,29 +69,10 @@ export const getOwnGoodsController = async (req, res) => {
 };
 
 export const createGoodsController = async (req, res) => {
-    const images = [];
+    let images = [];
 
     if (req.files && req.files.length > 0) {
-        if (getEnvVar('UPLOAD_TO_CLOUDINARY') === 'true') {       
-            for (const file of req.files) {          
-                const result = await uploadToCloudinary(file.path); 
-                images.push({
-                    public_id: result.public_id,
-                    url: result.secure_url,
-                });
-                await fs.unlink(file.path);
-            }
-        }
-        else {
-            for (const file of req.files) {           
-                const destinationPath = path.resolve('src', 'uploads', file.filename);              
-                await fs.rename(file.path, destinationPath);             
-                images.push({                
-                    public_id: null,                    
-                    url: `http://localhost:3000/uploads/${file.filename}`                  
-                });               
-            }             
-        }
+        images = await processUploadedFiles(req.files);
     }
   
     const goods = {
@@ -112,20 +90,34 @@ export const createGoodsController = async (req, res) => {
     });
 };
 
-export const patchGoodsController = async (req, res, next) => {
+export const patchGoodsController = async (req, res) => {
     const { id: goodsId } = req.params;
     const sellerId = req.user.id;
-    
-    const updatedGoods = await updateGoods(goodsId, sellerId, {...req.body});
-
-    if (!updatedGoods) {
+  
+    const existingGoods = await getGoodsById(goodsId);
+  
+    if (!existingGoods) {
         throw createHttpError(404, 'Goods not found');
     }
+  
+    const existingImages = existingGoods.images || [];
+    let newImages = [];
+  
+    if (req.files && req.files.length > 0) {
+        newImages = await processUploadedFiles(req.files);
+    }
 
-    res.json({
+    const updatedData = {
+        ...req.body,
+        images: [...existingImages, ...newImages],
+    };
+  
+    const updatedGoods = await updateGoods(goodsId, sellerId, updatedData);
+  
+    res.status(200).json({
         status: 200,
         message: 'Successfully patched a goods!',
-        data: updatedGoods
+        data: updatedGoods,
     });
 };
 
