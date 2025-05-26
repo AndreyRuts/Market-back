@@ -1,5 +1,3 @@
-// import createHttpError from "http-errors";
-
 import {
     createOrder,
     getOwnOrders
@@ -11,7 +9,6 @@ import { parsePaginationParams } from "../utils/parsePaginationParams.js";
 
 export const createOrderController = async (req, res) => {
     const buyerId = req.user.id;
-    console.log('buyerId from controller:', buyerId);
     const { items, deliveryAddress, comments } = req.body;
 
     const newOrder = await createOrder({

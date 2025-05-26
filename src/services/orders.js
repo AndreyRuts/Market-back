@@ -5,13 +5,12 @@ import { Goods } from "../models/goodsItem.js";
 
 export const createOrder = async ({ buyerId, items, deliveryAddress, comments }) => {
     const buyer = buyerId;
-    console.log('buyer used in create:', buyer);
     const productIds = items.map(i => i.product);
-    const goodsList = await Goods.find({ _id: { $in: productIds } });
-
+    const goodsList = await Goods.find({ _id: { $in: productIds } }).populate('seller');
     let totalPrice = 0;
+
     for (const item of items) {
-        const product = goodsList.find(g => g._id.toString() === item.product);
+        const product = goodsList.find(p => p._id.toString() === item.product);
         if (!product) throw new Error(`Product with such id ${item.product} not found`);
         if (product.quantity < item.quantity) throw new Error(`Not enough products "${product.title}"`);
 
@@ -26,6 +25,7 @@ export const createOrder = async ({ buyerId, items, deliveryAddress, comments })
             price: product.price,
             quantity: item.quantity,
             image: product.images?.[0]?.url || '',
+            seller: product.seller._id
         };
     });
 

@@ -1,22 +1,27 @@
 import mongoose from 'mongoose';
 
 const orderItemSchema = new mongoose.Schema({
-  product: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Goods',
-    required: true,
-  },
-  title: { type: String, required: true },
-  price: { type: Number, required: true },
-  quantity: { type: Number, required: true, min: 1 },
-  image: { type: String },
+    product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Goods',
+        required: true,
+    },  
+    title: { type: String, required: true },
+    price: { type: Number, required: true },
+    quantity: { type: Number, required: true, min: 1 },
+    image: { type: String },
+    seller: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Users',
+        required: true,
+    },
 });
 
 const orderSchema = new mongoose.Schema(
     {
         buyer: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+            ref: 'Users',
             required: true,
         },
         items: [orderItemSchema],
