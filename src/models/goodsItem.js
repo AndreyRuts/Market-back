@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const ALLOWED_CATEGORIES = ['electronics', 'clothing', 'books', 'toys', 'home', 'beauty'];
+import { ALLOWED_CATEGORIES } from '../constants/constants.js';
 
 const goodsSchema = new mongoose.Schema({
   title: {

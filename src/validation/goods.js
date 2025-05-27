@@ -1,6 +1,7 @@
 import Joi from 'joi';
 
-const ALLOWED_CATEGORIES = ['electronics', 'clothing', 'books', 'toys', 'home', 'beauty'];
+import { ALLOWED_CATEGORIES } from '../constants/constants.js';
+
 
 export const goodsValidationSchema = Joi.object({
     title: Joi.string().trim().min(2).max(100).required(),

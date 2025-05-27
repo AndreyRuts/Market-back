@@ -1,0 +1,13 @@
+<h2>Hello, {{name}}!</h2>
+<p>You have a new order. Below is the list of items that have been ordered from you:</p>
+<ul>
+    {{#each items}}
+    <li>
+        {{title}} – {{quantity}} pcs at {{price}}₴ each
+    </li>
+    {{/each}}
+</ul>
+<p><strong>Delivery address:</strong> {{deliveryAddress}}</p>
+{{#if comments}}
+<p><strong>Customer's comment:</strong> {{comments}}</p>
+{{/if}}

@@ -1,7 +1,14 @@
 import mongoose from "mongoose";
+import Handlebars from "handlebars";
 
 import { Order } from "../models/order.js";
 import { Goods } from "../models/goodsItem.js";
+
+import { sendEmail } from '../utils/sendEmail.js';
+import {
+    ORDER_NOTIFICATION_TEMPLATE,
+    EMAIL_SUBJECTS
+} from "../constants/constants.js";
 
 export const createOrder = async ({ buyerId, items, deliveryAddress, comments }) => {
     const buyer = buyerId;
@@ -45,6 +52,37 @@ export const createOrder = async ({ buyerId, items, deliveryAddress, comments })
         }
     }));
     await Goods.bulkWrite(writeOffGoods);
+
+    const template = Handlebars.compile(ORDER_NOTIFICATION_TEMPLATE);
+    const sellerMap = new Map();
+
+    for (const item of orderedItems) {
+        const product = goodsList.find(p => p._id.toString() === item.product.toString());
+        const seller = product.seller;
+
+        if (!sellerMap.has(seller._id.toString())) {
+            sellerMap.set(seller._id.toString(), {
+                seller,
+                items: []
+            });
+        }
+        sellerMap.get(seller._id.toString()).items.push(item);
+    }
+
+    for (const { seller, items } of sellerMap.values()) {
+        const html = template({
+            name: seller.name,
+            items,
+            deliveryAddress,
+            comments
+        });
+
+        await sendEmail(
+            seller.email,
+            EMAIL_SUBJECTS.orderNotification,
+            html
+        );
+    }
 
     return newOrder;
 };

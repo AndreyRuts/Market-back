@@ -1,9 +1,20 @@
 import crypto from 'node:crypto';
 import createHttpError from "http-errors";
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import Handlebars from 'handlebars';
 
 import { User } from '../models/user.js';
 import { Session } from '../models/session.js';
+
+import { getEnvVar } from '../utils/getEnvVar.js';
+import { sendEmail } from '../utils/sendEmail.js';
+
+import {
+    RESET_PASSWORD_TEMPLATE,
+    PASSWORD_CHANGED_TEMPLATE,
+    EMAIL_SUBJECTS
+ } from '../constants/constants.js';
 
 
 export const registerUser = async (payload) => {
@@ -60,4 +71,44 @@ export const refreshSession = async (sessionId, refreshToken) => {
 export const logOutUser = async (sessionId, refreshToken) => {
     await Session.deleteOne({ _id: sessionId, refreshToken });
     return undefined;
+};
+
+export const requestResetPassword = async (email) => {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        throw createHttpError.NotFound('User not found');
+    }
+
+    const resetToken = jwt.sign({ sub: user._id, name: user.name },
+        getEnvVar('JWT_SECRET'),
+        {expiresIn: '5m'}
+    );
+    const template = Handlebars.compile(RESET_PASSWORD_TEMPLATE);
+    const domain = getEnvVar('APP_DOMAIN');
+
+    await sendEmail(email, EMAIL_SUBJECTS.resetPassword, template({domain, resetToken}));
+};
+
+export const resetPassword = async (token, newPassword) => {
+    try {
+        const decoded = jwt.verify(token, getEnvVar('JWT_SECRET'));
+        const user = await User.findById(decoded.sub);
+
+        if (!user) {
+            throw createHttpError.NotFound('User not Found');
+        }
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await User.findByIdAndUpdate(user._id, { password: hashedPassword });
+
+        const template = Handlebars.compile(PASSWORD_CHANGED_TEMPLATE);
+        const html = template({ name: user.name });
+        await sendEmail(user.email, EMAIL_SUBJECTS.passwordChanged, html);
+
+    } catch (error) {
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            throw createHttpError.Unauthorized('Token is expired or invalid');
+        }
+        throw error;
+    }
 };
