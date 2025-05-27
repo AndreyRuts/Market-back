@@ -4,15 +4,32 @@ import {
     refreshSession,
     logOutUser,
     requestResetPassword,
-    resetPassword
+    resetPassword,
+    verifyUserEmail
 } from "../services/auth.js";
 
 export const registerUserController = async (req, res) => {
     const user = await registerUser(req.body);
+    const userObj = user.toObject();
+    delete userObj.verificationToken;
+    delete userObj.password;
     res.status(201).json({
         status: 200,
         message: 'Successfully registered a user!',
-        data: user
+        data: userObj
+    });
+};
+
+
+export const verifyUserEmailController = async (req, res) => {
+    const { token } = req.params;
+  
+    await verifyUserEmail(token);
+  
+    res.status(200).json({
+        status: 200,
+        message: 'Email successfully verified',
+        data: {}
     });
 };
 
@@ -20,14 +37,14 @@ export const loginUserController = async (req, res) => {
     const session = await loginUser(req.body.email, req.body.password);
     res.cookie('sessionId', session._id, {
         httpOnly: true,
-        expire: session.refreshTokenValidUntil
+        expires: session.refreshTokenValidUntil
     });
     res.cookie('refreshToken', session.refreshToken, {
         httpOnly: true,
-        expire: session.refreshTokenValidUntil
+        expires: session.refreshTokenValidUntil
     });
     res.status(200).json({
-        res: 200,
+        status: 200,
         message: 'Successfully logged in an user!',
         data: {
             accessToken: session.accessToken

@@ -6,14 +6,15 @@ import {
     refreshController,
     logoutController,
     requestPasswordResetController,
-    resetPasswordController
+    resetPasswordController,
+    verifyUserEmailController
 } from '../controllers/auth.js';
 
 import {
     registerSchema,
     loginSchema,
     requestPasswordResetSchema,
-    resetPasswordSchema
+    resetPasswordSchema,
 } from '../validation/auth.js';
 
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
@@ -44,5 +45,6 @@ authRouter.post(
     validateBody(resetPasswordSchema),
     ctrlWrapper(resetPasswordController)
 );
+authRouter.get('/verify-email/:token', ctrlWrapper(verifyUserEmailController));
 
 export default authRouter;

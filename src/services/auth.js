@@ -13,23 +13,59 @@ import { sendEmail } from '../utils/sendEmail.js';
 import {
     RESET_PASSWORD_TEMPLATE,
     PASSWORD_CHANGED_TEMPLATE,
+    VERIFY_EMAIL_TEMPLATE,
     EMAIL_SUBJECTS
  } from '../constants/constants.js';
 
 
 export const registerUser = async (payload) => {
-    const user = await User.findOne({ email: payload.email });
-    if (user !== null) {
+    const existingUser = await User.findOne({ email: payload.email });
+
+    if (existingUser) {
         throw createHttpError.Conflict('Email in use');
     }
-    payload.password = await bcrypt.hash(payload.password, 10); 
-    return User.create(payload);
+  
+    const hashedPassword = await bcrypt.hash(payload.password, 10);
+    const verificationToken = crypto.randomBytes(32).toString('base64url');
+    const user = await User.create({
+        ...payload,
+        password: hashedPassword,
+        verificationToken,
+        isVerified: false
+    });
+
+    const verificationLink = `${getEnvVar('APP_DOMAIN')}/verify-email/${verificationToken}`;
+    const template = Handlebars.compile(VERIFY_EMAIL_TEMPLATE);
+    const html = template({
+        name: user.name,
+        verificationLink
+    });
+  
+    await sendEmail(user.email, EMAIL_SUBJECTS.verifyEmail, html);
+  
+    return user;
+};
+
+export const verifyUserEmail = async (token) => {
+    const user = await User.findOne({ verificationToken: token });
+  
+    if (!user) {
+        throw createHttpError.BadRequest('Invalid or expired verification token');
+    }
+  
+    user.isVerified = true;
+    user.verificationToken = null;
+  
+    await user.save();
 };
 
 export const loginUser = async (email, password) => {
     const userData = await User.findOne({ email });
     if (userData === null) {
         throw createHttpError.Unauthorized('Email or password is incorrect');
+    }
+    if (!userData.isVerified) {
+        throw createHttpError.Unauthorized('Please verify your email before logging in');
     }
     const isMatch = await bcrypt.compare(password, userData.password);
     if (isMatch !== true) {
