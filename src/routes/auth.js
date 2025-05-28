@@ -7,7 +7,9 @@ import {
     logoutController,
     requestPasswordResetController,
     resetPasswordController,
-    verifyUserEmailController
+    verifyUserEmailController,
+    getOauthUrlController,
+    confirmOAuthController
 } from '../controllers/auth.js';
 
 import {
@@ -15,6 +17,7 @@ import {
     loginSchema,
     requestPasswordResetSchema,
     resetPasswordSchema,
+    confirmOAuthSchema
 } from '../validation/auth.js';
 
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
@@ -46,5 +49,10 @@ authRouter.post(
     ctrlWrapper(resetPasswordController)
 );
 authRouter.get('/verify-email/:token', ctrlWrapper(verifyUserEmailController));
+authRouter.get('/get-oauth-url', ctrlWrapper(getOauthUrlController));
+authRouter.post(
+    '/confirm-oauth',
+    validateBody(confirmOAuthSchema),
+    ctrlWrapper(confirmOAuthController));
 
 export default authRouter;
