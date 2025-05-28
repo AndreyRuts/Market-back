@@ -13,6 +13,7 @@ import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { processUploadedFiles } from '../utils/processUploadedFiles.js';
+import { ALLOWED_CATEGORIES } from '../constants/constants.js';
 
 
 export const getAllGoodsController = async (req, res) => {
@@ -131,4 +132,12 @@ export const deleteGoodsController = async (req, res) => {
     }
 
     res.status(204).send();
- };
+};
+
+export const getCategoriesController = async (req, res) => {
+    res.status(200).json({
+        status: 200,
+        message: 'Category list retrieved successfully',
+        data: ALLOWED_CATEGORIES
+    });
+};

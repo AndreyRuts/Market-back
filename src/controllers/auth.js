@@ -17,7 +17,7 @@ export const registerUserController = async (req, res) => {
     delete userObj.verificationToken;
     delete userObj.password;
     res.status(201).json({
-        status: 200,
+        status: 201,
         message: 'Successfully registered a user!',
         data: userObj
     });
