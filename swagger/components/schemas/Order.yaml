@@ -1,0 +1,43 @@
+type: object
+required:
+  - _id
+  - goodsId
+  - quantity
+  - address
+  - status
+  - createdAt
+  - updatedAt
+properties:
+  _id:
+    type: string
+    format: objectId
+    example: '642f3a9c9a7b9a00123f4567'
+  goodsId:
+    $ref: ./Good.yaml
+  quantity:
+    type: integer
+    example: 2
+  address:
+    type: string
+    example: '10 Lenin St, Apt 5'
+  comment:
+    type: string
+    example: 'Please call 30 minutes before delivery'
+  status:
+    type: string
+    description: Order status
+    enum:
+      - pending
+      - confirmed
+      - shipped
+      - delivered
+      - cancelled
+    example: pending
+  createdAt:
+    type: string
+    format: date-time
+    example: '2025-05-29T12:34:56Z'
+  updatedAt:
+    type: string
+    format: date-time
+    example: '2025-05-29T12:34:56Z'

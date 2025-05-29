@@ -1,0 +1,79 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: Market API
+  description: This is the API documentation for the Market backend.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://localhost:3000
+  - url: https://your-market-app-production.com
+
+tags:
+  - name: Auth
+    description: Endpoints related to user authentication and authorization
+  - name: Goods
+    description: Public endpoints for goods and categories
+  - name: OwnGoods
+    description: Endpoints for authenticated user's own goods management
+  - name: Orders
+    description: Endpoints for authenticated user's orders management
+
+paths:
+  /auth/register:
+    post:
+      $ref: ../swagger/paths/auth/register.yaml
+  /auth/login:
+    post:
+      $ref: ../swagger/paths/auth/login.yaml
+  /auth/logout:
+    post:
+      $ref: ../swagger/paths/auth/logout.yaml
+  /auth/refresh:
+    post:
+      $ref: ../swagger/paths/auth/refresh.yaml
+  /auth/send-reset-email:
+    post:
+      $ref: ../swagger/paths/auth/send-reset-email.yaml
+  /auth/reset-password:
+    post:
+      $ref: ../swagger/paths/auth/reset-password.yaml
+  /auth/verify-email/{token}:
+    get:
+      $ref: ../swagger/paths/auth/verify-email.yaml
+  /auth/get-oauth-url:
+    get:
+      $ref: ../swagger/paths/auth/get-oauth-url.yaml
+  /auth/confirm-oauth:
+    post:
+      $ref: ../swagger/paths/auth/confirm-oauth.yaml
+  /goods:
+    get:
+      $ref: ../swagger/paths/goods/getAll.yaml
+  /goods/{id}:
+    get:
+      $ref: ../swagger/paths/goods/getById.yaml
+  /goods/categories:
+    get:
+      $ref: ../swagger/paths/goods/getCategories.yaml
+  /own/goods:
+    get:
+      $ref: ../swagger/paths/{id}/goods/getOwnGoods.yaml
+    post:
+      $ref: ../swagger/paths/{id}/goods/postOwnGoods.yaml
+  /own/goods/{id}:
+    patch:
+      $ref: ../swagger/paths/{id}/goods/patchOwnGoods.yaml
+    delete:
+      $ref: ../swagger/paths/{id}/goods/deleteOwnGoods.yaml
+  /own/orders:
+    post:
+      $ref: ../swagger/paths/{id}/orders/postOwnOrders.yaml
+    get:
+      $ref: ../swagger/paths/{id}/orders/getOwnOrders.yaml
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

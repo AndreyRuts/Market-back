@@ -1,0 +1,45 @@
+type: object
+required:
+  - _id
+  - title
+  - price
+  - category
+  - seller
+properties:
+  _id:
+    type: string
+    format: objectId
+    example: 60d21b4667d0d8992e610c85
+  title:
+    type: string
+    example: 'Apple iPhone 14'
+  description:
+    type: string
+    example: 'Brand new iPhone 14 with 128GB storage'
+  category:
+    type: string
+    example: 'Smartphones'
+  price:
+    type: number
+    example: 999.99
+  quantity:
+    type: integer
+    example: 5
+  images:
+    type: array
+    items:
+      type: string
+      format: uri
+      example: 'https://res.cloudinary.com/market/image/upload/v1624456723/sample.jpg'
+  seller:
+    type: string
+    format: objectId
+    example: 60d21b4667d0d8992e610c80
+  createdAt:
+    type: string
+    format: date-time
+    example: '2024-05-29T10:30:00Z'
+  updatedAt:
+    type: string
+    format: date-time
+    example: '2024-05-29T12:00:00Z'

@@ -1,0 +1,15 @@
+description: Email is already in use
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - status
+        - error
+      properties:
+        status:
+          type: integer
+          example: 409
+        error:
+          type: string
+          example: Email in use

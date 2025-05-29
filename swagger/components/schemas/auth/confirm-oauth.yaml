@@ -1,0 +1,8 @@
+type: object
+required:
+  - code
+properties:
+  code:
+    type: string
+    description: OAuth authorization code received from client
+    example: '4/0AX4XfWj9a1B2c3D4e5F6G7H8I9J0K'

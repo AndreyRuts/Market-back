@@ -1,0 +1,46 @@
+tags:
+  - OwnGoods
+summary: Get authenticated user's goods
+operationId: getOwnGoods
+security:
+  - bearerAuth: []
+responses:
+  '200':
+    description: Successfully retrieved user's goods
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: User's goods retrieved successfully
+            data:
+              type: array
+              items:
+                $ref: ../../../components/schemas/Good.yaml
+  '401':
+    description: Unauthorized — user not authenticated
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - error
+          properties:
+            status:
+              type: integer
+              example: 401
+            error:
+              type: string
+              example: Unauthorized
+  '500':
+    $ref: ../../../components/responses/500.yaml

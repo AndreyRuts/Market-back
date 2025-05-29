@@ -1,0 +1,115 @@
+tags:
+  - Goods
+summary: Get all public goods with pagination, sorting and filtering
+operationId: getAllGoods
+security:
+  - {}
+parameters:
+  - name: page
+    in: query
+    description: Page number (starting from 1)
+    schema:
+      type: integer
+      minimum: 1
+      default: 1
+  - name: perPage
+    in: query
+    description: Number of items per page
+    schema:
+      type: integer
+      minimum: 1
+      maximum: 100
+      default: 10
+  - name: sortBy
+    in: query
+    description: Field to sort by (e.g. price, createdAt)
+    schema:
+      type: string
+      default: createdAt
+  - name: sortOrder
+    in: query
+    description: Sort order
+    schema:
+      type: string
+      enum: [asc, desc]
+      default: desc
+  - name: category
+    in: query
+    description: Filter by category
+    schema:
+      type: string
+  - name: priceMin
+    in: query
+    description: Filter by minimum price
+    schema:
+      type: number
+      minimum: 0
+  - name: priceMax
+    in: query
+    description: Filter by maximum price
+    schema:
+      type: number
+      minimum: 0
+
+responses:
+  '200':
+    description: Successfully found all public goods
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully found all public goods!
+            data:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: ../../components/schemas/Good.yaml
+                page:
+                  type: integer
+                  example: 1
+                perPage:
+                  type: integer
+                  example: 10
+                totalItems:
+                  type: integer
+                  example: 100
+                totalPages:
+                  type: integer
+                  example: 10
+                hasPreviousPage:
+                  type: boolean
+                  example: false
+                hasNextPage:
+                  type: boolean
+                  example: true
+  '400':
+    description: Invalid query parameters
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - error
+          properties:
+            status:
+              type: integer
+              example: 400
+            error:
+              type: string
+              example: Invalid query parameters
+
+  '500':
+    $ref: ../../components/responses/500.yaml

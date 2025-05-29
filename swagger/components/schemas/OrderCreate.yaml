@@ -1,0 +1,24 @@
+type: object
+required:
+  - goodsId
+  - quantity
+  - address
+properties:
+  goodsId:
+    type: string
+    format: objectId
+    description: ID of the product being ordered
+    example: '642f3a9c9a7b9a00123f4567'
+  quantity:
+    type: integer
+    minimum: 1
+    description: Number of units ordered
+    example: 2
+  address:
+    type: string
+    description: Delivery address
+    example: '10 Lenin St, Apt 5'
+  comment:
+    type: string
+    description: Additional comments for the order
+    example: 'Please call 30 minutes before delivery'

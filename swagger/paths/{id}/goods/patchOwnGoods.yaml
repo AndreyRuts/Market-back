@@ -1,0 +1,112 @@
+tags:
+  - OwnGoods
+summary: Update an existing good of the authenticated user
+operationId: patchGoods
+security:
+  - bearerAuth: []
+parameters:
+  - name: id
+    in: path
+    required: true
+    description: ID of the good to update
+    schema:
+      type: string
+requestBody:
+  required: true
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          title:
+            type: string
+            example: 'Updated phone title'
+          description:
+            type: string
+            example: 'Updated description'
+          category:
+            type: string
+            example: 'electronics'
+          price:
+            type: number
+            minimum: 0
+            example: 450
+          quantity:
+            type: integer
+            minimum: 1
+            example: 5
+          images:
+            type: array
+            items:
+              type: string
+              format: binary
+responses:
+  '200':
+    description: Good updated successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Good updated successfully
+            data:
+              $ref: ../../../components/schemas/Good.yaml
+  '400':
+    description: Invalid input data
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - error
+          properties:
+            status:
+              type: integer
+              example: 400
+            error:
+              type: string
+              example: Validation failed
+  '401':
+    description: Unauthorized — user not authenticated
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - error
+          properties:
+            status:
+              type: integer
+              example: 401
+            error:
+              type: string
+              example: Unauthorized
+  '404':
+    description: Good not found
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - error
+          properties:
+            status:
+              type: integer
+              example: 404
+            error:
+              type: string
+              example: Good not found
+  '500':
+    $ref: ../../../components/responses/500.yaml

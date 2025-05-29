@@ -1,0 +1,32 @@
+tags:
+  - Auth
+summary: Get OAuth URL for Google authentication
+operationId: getOauthUrl
+description: Returns a URL to initiate OAuth flow with Google
+security:
+  - {}
+responses:
+  '200':
+    description: OAuth URL generated successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            data:
+              type: object
+              required:
+                - url
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  example: https://accounts.google.com/o/oauth2/auth?client_id=...
+  '500':
+    $ref: ../../components/responses/500.yaml

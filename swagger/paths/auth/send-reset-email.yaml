@@ -1,0 +1,48 @@
+tags:
+  - Auth
+summary: Send password reset email
+operationId: sendResetEmail
+description: Sends a password reset email with a token to the user's email address
+security:
+  - {}
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        $ref: ../../components/schemas/auth/send-reset-email.yaml
+responses:
+  '200':
+    description: Reset email sent successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Password reset email sent
+  '400':
+    description: Bad Request - Invalid or missing email
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - error
+          properties:
+            status:
+              type: integer
+              example: 400
+            error:
+              type: string
+              example: 'Email is required'
+  '500':
+    $ref: ../../components/responses/500.yaml

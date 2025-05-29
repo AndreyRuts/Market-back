@@ -1,0 +1,68 @@
+tags:
+  - Goods
+summary: Get a single good by its ID
+operationId: getGoodById
+security:
+  - {}
+parameters:
+  - name: id
+    in: path
+    required: true
+    description: ID of the good to retrieve
+    schema:
+      type: string
+      format: objectId
+responses:
+  '200':
+    description: Successfully retrieved the good
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully found the good!
+            data:
+              $ref: ../../components/schemas/Good.yaml
+  '400':
+    description: Invalid good ID
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - error
+          properties:
+            status:
+              type: integer
+              example: 400
+            error:
+              type: string
+              example: Invalid good ID
+  '404':
+    description: Good not found
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - error
+          properties:
+            status:
+              type: integer
+              example: 404
+            error:
+              type: string
+              example: Good not found
+  '500':
+    $ref: ../../components/responses/500.yaml

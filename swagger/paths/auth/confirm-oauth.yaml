@@ -1,0 +1,42 @@
+tags:
+  - Auth
+summary: Confirm OAuth login/signup
+operationId: confirmOAuth
+description: Accepts OAuth code, validates it, and returns access and refresh tokens
+security:
+  - {}
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        $ref: ../../components/schemas/auth/confirm-oauth.yaml
+responses:
+  '200':
+    description: OAuth confirmation successful
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: OAuth login successful
+            data:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                refreshToken:
+                  type: string
+  '400':
+    $ref: ../../components/responses/400.yaml
+  '500':
+    $ref: ../../components/responses/500.yaml

@@ -124,24 +124,43 @@ src/
 
 ---
 
-## 🔧 Переменные окружения (`.env`)
-
-Пример в `.env.example`. Обязательные переменные:
-
-```
-PORT=3000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-CLOUDINARY_CLOUD_NAME=your_cloudinary_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-BREVO_API_KEY=your_brevo_api_key
-BREVO_SENDER_EMAIL=your_sender_email
-CLIENT_URL=https://your-frontend.example.com
-```
-
----
-
-## 📝 Планы на будущее
-
----
+root/
+├── docs/
+│ ├── openapi.yaml
+│ ├── swagger.json
+│ └── index.html
+├── swagger/
+│ ├── components/
+│ │ ├── schemas/
+│ │ │ ├── auth/
+│ │ │ │ ├── register.yaml
+│ │ │ │ ├── login.yaml
+│ │ │ │ ├── logout.yaml
+│ │ │ │ └── refresh.yaml
+│ │ │ ├── User.yaml
+│ │ │ ├── Good.yaml
+│ │ │ └── Order.yaml
+│ │ └── responses/
+│ │ ├── 400.yaml
+│ │ ├── 401.yaml
+│ │ ├── 403.yaml
+│ │ ├── 404.yaml
+│ │ └── 500.yaml
+│ └── paths/
+│ ├── auth/
+│ │ ├── register.yaml
+│ │ ├── login.yaml
+│ │ ├── logout.yaml
+│ │ └── refresh.yaml
+│ ├── goods/
+│ │ ├── getAll.yaml
+│ │ └── getById.yaml
+│ └── {id}/
+│ ├── goods/
+│ │ ├── get.yaml
+│ │ ├── post.yaml
+│ │ ├── patch.yaml
+│ │ └── delete.yaml
+│ └── orders/
+│ ├── get.yaml
+│ └── post.yaml

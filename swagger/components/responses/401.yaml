@@ -1,0 +1,15 @@
+description: No active session found
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - status
+        - error
+      properties:
+        status:
+          type: integer
+          example: 401
+        message:
+          type: string
+          example: No active session found

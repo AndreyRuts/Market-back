@@ -1,0 +1,31 @@
+tags:
+  - Goods
+summary: Get all available categories of goods
+operationId: getGoodsCategories
+security:
+  - {}
+responses:
+  '200':
+    description: Successfully retrieved categories
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Categories retrieved successfully
+            data:
+              type: array
+              items:
+                type: string
+                example: Electronics
+  '500':
+    $ref: ../../components/responses/500.yaml

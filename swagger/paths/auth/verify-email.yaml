@@ -1,0 +1,49 @@
+tags:
+  - Auth
+summary: Verify user email
+operationId: verifyEmail
+description: Verifies a user's email using a token sent via email
+security:
+  - {}
+parameters:
+  - name: token
+    in: path
+    required: true
+    schema:
+      type: string
+    description: Token sent to user's email for verification
+responses:
+  '200':
+    description: Email verified successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Email verified successfully
+  '400':
+    description: Invalid or expired verification token
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - error
+          properties:
+            status:
+              type: integer
+              example: 400
+            error:
+              type: string
+              example: Invalid or expired token
+  '500':
+    $ref: ../../components/responses/500.yaml
